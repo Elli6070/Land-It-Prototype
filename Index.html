@@ -2,26 +2,27 @@
 <html>
 <head>
     <title>Land-It Prototype</title>
-    <script type="text/javascript" src="app.js"></script>
+    <script type="text/javascript" src="app.js" name="saveText">
+	</script>
 </head>
-<body onload="load()">
-<div id="myform">
-<b>Land-It Prototype</b>
-<table>
-	<tr>
-		<td>
-			<textarea id = "textInput"
-				style = "width:600px; resize:none; height:200px;"
-				placeholder = "Type what to print here!"></textarea>
-		</td>
-	</tr>
-    <tr>
-		<td>
-			<input type="button" id="add" value="Print" onclick="Javascript:addRow()" >
-		</td>
-    </tr>
-
-</table>
-</div>
-</body>
+	<body>
+		<form action="">
+		  <textarea id="m" autocomplete="off" placeholder="Type what to print here!" style = "width:600px; resize:none; height:200px;"></textarea>
+		  <br><br>
+		  <button>Print</button>
+		</form>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+		<script>
+		  $(function () {
+			var socket = io();
+			$('form').submit(function(e){
+			  e.preventDefault(); // prevents page reloading
+			  socket.emit('print message', $('#m').val());
+			  $('#m').val('');
+			  return false;
+			});
+		  });
+		</script>
+	</body
 </html>
