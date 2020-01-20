@@ -1,5 +1,5 @@
 # Land-It Prototype
-<img src = "images/3M-logo.jpg" width="50" height="50" />
+<img src = "images/3M.jpg" width="50" height="50" />
 Access to web app at http://land-it-prototype.herokuapp.com/
 
 #### What is the Land-It Prototype?
