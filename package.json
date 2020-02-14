@@ -1,7 +1,7 @@
 {
   "name": "landitprototype",
   "version": "1.0.0",
-  "description": "",
+  "description": "<img src = \"images/3M.jpg\" width=\"50\" height=\"50\" />\r Access to web app at http://land-it-prototype.herokuapp.com/",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,6 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
+    "express-handlebars": "^3.1.0",
     "socket.io": "^2.3.0"
-  }
+  },
+  "devDependencies": {}
 }

@@ -27,8 +27,9 @@
 <body>
 	<div id = "divElement">
 		<h1> <!--<img src="3M.PNG" height="50" width="50"/>--> Land-It Prototype </h1>
-		<form action="">
+		<form action="" method="post" enctype="multipart/form-data" action="/upload">
 		  <textarea id="m" autocomplete="off" placeholder="Type what to print here!"></textarea>
+		  <input id="f" type="file" name="file">
 		  <br><br>
 		  <button>Print</button>
 		</form>
@@ -39,8 +40,8 @@
 			var socket = io();
 			$('form').submit(function(e){
 			  e.preventDefault(); // prevents page reloading
-			  socket.emit('print message', $('#m').val());
-			  $('#m').val('');
+			  socket.emit('print message', { "textInput":$('#m').val(), "fileInput":$('#f').val()});
+			  $('#m').val(''); // Clear value
 			  return false;
 			});
 		  });
