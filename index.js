@@ -94,7 +94,7 @@ app.post('/api/lines', function (req, res) {
         gcode_commands.push(gcode_command);
     }
     console.log(gcode_commands);
-
+/* REMOVE WHEN LINE_US CONNECTED
     //Open new net socket to Line-Us
     var client = new net.Socket();
     var cmdIndex = 0;
@@ -133,7 +133,7 @@ app.post('/api/lines', function (req, res) {
     client.on('close', function () {
         console.log('Connection closed');
     });
-    res.send('OK');
+    res.send('OK');*/
 });
 
 //Custom 404 page
