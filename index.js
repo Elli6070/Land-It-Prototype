@@ -42,7 +42,7 @@ var host = 'line-us.local';
 var bound_x_min = 700;
 var bound_x_max = 1625;
 var bound_y_min = -1000;
-var bound_y_max = 1000;
+var bound_y_max = 0;
 var bound_z_min = 100;
 var bound_z_max = 1000;
 
@@ -75,10 +75,9 @@ app.post('/api/lines', function (req, res) {
         var gcode_command = '';
 
         //Invert x
-        line_parsed[i].x = Math.abs(line_parsed[i].x - 1);
-
+        //line_parsed[i].x = Math.abs(line_parsed[i].x - 1);
         //Bounds calculation from percentage coordinates to Line-Us platform bounds
-        var x = ((bound_y_max - bound_y_min) * line_parsed[i].x) + bound_y_min;
+        var x = ((bound_x_max - bound_x_min) * line_parsed[i].x) + bound_x_min;
         var y = ((bound_y_max - bound_y_min) * line_parsed[i].y) + bound_y_min;
 
         //Round coordinates
@@ -94,7 +93,7 @@ app.post('/api/lines', function (req, res) {
         gcode_commands.push(gcode_command);
     }
     console.log(gcode_commands);
-/* REMOVE WHEN LINE_US CONNECTED
+
     //Open new net socket to Line-Us
     var client = new net.Socket();
     var cmdIndex = 0;
@@ -133,7 +132,7 @@ app.post('/api/lines', function (req, res) {
     client.on('close', function () {
         console.log('Connection closed');
     });
-    res.send('OK');*/
+    res.send('OK');
 });
 
 //Custom 404 page
