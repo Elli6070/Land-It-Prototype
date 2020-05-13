@@ -5,18 +5,19 @@ var path = require("path");
 var express = require("express");
 var handlebars = require('express-handlebars');
 var bodyParser = require('body-parser')
-var net = require('net');
-var http = require("http").Server(app);
-var io = require("socket.io")(http);
-
 var app = express();
+var http = require("http").Server(app);
+var io = require("socket.io");
+// Client must connect to http://land-it-prototype.com:3000
+var server = io.listen(3000);
+
 
 /*
 Node implementation of a web interface controlling a Line-Us
 Network Pen Robot https://www.line-us.com
-With help from Jonathan Hassall https://github.com/jonhassall
+With code from Jonathan Hassall https://github.com/jonhassall
 */
-//Default to port 3000
+//Default to port 8000
 app.set('port', process.env.PORT || 8000);
 
 //Use Handlebars for views
@@ -55,6 +56,10 @@ var current_z = 1000;
 var penUp_time = 0;
 var checkPenUp_timer;
 
+server.on("connection", (socket) => {
+	console.log("Printer Connected");
+});
+
 //Serve web client
 app.get('/', function (req, res) {
     console.log('Request for /');
@@ -76,6 +81,8 @@ app.post('/api/lines', function (req, res) {
 
         //Invert x
         //line_parsed[i].x = Math.abs(line_parsed[i].x - 1);
+		//Invert y
+		//line_parsed[i].y = Math.abs(line_parsed[i].y - 1);
         //Bounds calculation from percentage coordinates to Line-Us platform bounds
         var x = ((bound_x_max - bound_x_min) * line_parsed[i].x) + bound_x_min;
         var y = ((bound_y_max - bound_y_min) * line_parsed[i].y) + bound_y_min;
@@ -94,46 +101,9 @@ app.post('/api/lines', function (req, res) {
     }
     console.log(gcode_commands);
 
-    //Open new net socket to Line-Us
-    var client = new net.Socket();
-    var cmdIndex = 0;
-
-    client.connect(1337, host, function () {
-        console.log('Connected');
-        cmdIndex = 0;
-    });
-
-    //Based on pandrr's example
-    client.on('data', function (data) {
-        console.log('Received: ' + data);
-
-        //Last command (or connecting) was successful, so send a new command
-        if (data.indexOf("hello") == 0 || data.indexOf("ok ") == 0) {
-            console.log('cmdIndex: ' + cmdIndex);
-            console.log('Sending: ' + gcode_commands[cmdIndex]);
-            client.write(gcode_commands[cmdIndex] + '\x00\n');
-            cmdIndex++;
-        }
-
-        //Error handler
-        if (data.indexOf('error') == 0) {
-            console.log('Error in command ' + cmdIndex);
-            console.log('Disconnecting...');
-            client.destroy();
-        }
-
-        //End of commands
-        if (cmdIndex == gcode_commands.length) {
-            console.log('Finished!');
-            client.destroy();
-        }
-    });
-
-    client.on('close', function () {
-        console.log('Connection closed');
-    });
-    res.send('OK');
+	io.emit('print message', gcode_commands);
 });
+
 
 //Custom 404 page
 app.use(function (req, res, next) {
@@ -155,38 +125,3 @@ app.listen(app.get('port'), function () {
     console.log('Express started on http://localhost:' +
         app.get('port') + '; press Ctrl-C to terminate.');
 });
-
-console.log('Server started on localhost:' + app.get('port') + '; press Ctrl-C to terminate...');
-
-/* ZOMBIE CODE, will be killed eventually
-let port = process.env.PORT;
-if (port == null || port == "") {
-   port = 8000;
-}
-var index_file = path.join(__dirname, "Index.html");
-
-
-app.get("/", (req, res) => {
-    console.log("Getting Index.html at " + index_file);
-
-    fs.readFile(index_file, (err, index) => {
-        if (err) { console.log("Error getting Index.html"); }
-
-        else {
-			res.sendFile(index_file);
-        }
-    });
-
-});
-
-io.on('connection', function(socket){
-  socket.on('print message', function(msg){
-	console.log("text: " + msg.textInput);
-	console.log("file: " + msg.fileInput);
-    console.log('sending data to printer');
-	io.emit('print message', msg);
-  });
-});
-
-http.listen(port, () => console.log("App now listening on port " + port));
-*/

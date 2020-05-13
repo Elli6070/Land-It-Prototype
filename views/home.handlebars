@@ -8,4 +8,23 @@
 
 <canvas id="myCanvas" width="308" height="666" style="background-image: url('/images/notepaper-background.png'); background-size: contain;">
 </canvas>
+
+<form action="" method="post" enctype="multipart/form-data" action="/upload">  
+	<button>Print</button>
+</form>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+		  /*$(function () {
+			var socket = io();
+			$('form').submit(function(e){
+			  e.preventDefault(); // prevents page reloading
+			  socket.emit('print message', "Print Drawing");
+			  return false;
+			});
+		  });*/
+		  var socket = io();
+</script>
+
 </div>
